@@ -46,8 +46,8 @@ const productSchema = new Schema({
         default: true
     },
     foto_url: {
-        type: String,
-        trim: true
+        type: [String],
+        default: []
     },
     receta: [recetaSchema],
     activo: {
