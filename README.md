@@ -125,6 +125,18 @@ Administra las recetas y procedimientos de preparación de los platos.
 
 **Descripción:** Vincula productos (platos) con sus ingredientes y suministros, incluyendo cantidades necesarias, pasos de preparación, tiempo de cocción, dificultad y personal encargado. Crucial para la gestión de costos y control de calidad.
 
+
+### **10. 📅 Módulo de Reservas** (`/bite-and-go/v1/reservations`)
+Gestiona las reservas de mesas realizadas por los clientes en los restaurantes.
+
+**Funcionalidades:**
+-**GET** - Listar reservas con filtros por fecha, estado, cliente o restaurante
+-**POST** - Crear nueva reserva
+-**PUT** - Actualizar datos de la reserva (fecha, hora, cantidad de personas, estado)
+-**DELETE** - Cancelar reserva
+
+**Descripción:** Permite a los clientes reservar mesas en restaurantes específicos indicando fecha, hora y número de personas. El módulo valida disponibilidad según capacidad y estado de las mesas, evita sobre reservas y mantiene estados como: pendiente, confirmada, cancelada o completada.
+
 ---
 
 ## 🔧 Tecnologías Utilizadas
