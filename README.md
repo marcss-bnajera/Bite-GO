@@ -130,10 +130,10 @@ Administra las recetas y procedimientos de preparación de los platos.
 Gestiona las reservas de mesas realizadas por los clientes en los restaurantes.
 
 **Funcionalidades:**
--**GET** - Listar reservas con filtros por fecha, estado, cliente o restaurante
--**POST** - Crear nueva reserva
--**PUT** - Actualizar datos de la reserva (fecha, hora, cantidad de personas, estado)
--**DELETE** - Cancelar reserva
+ -**GET** - Listar reservas con filtros por fecha, estado, cliente o restaurante
+- **POST** - Crear nueva reserva
+- **PUT** - Actualizar datos de la reserva (fecha, hora, cantidad de personas, estado)
+- **DELETE** - Cancelar reserva
 
 **Descripción:** Permite a los clientes reservar mesas en restaurantes específicos indicando fecha, hora y número de personas. El módulo valida disponibilidad según capacidad y estado de las mesas, evita sobre reservas y mantiene estados como: pendiente, confirmada, cancelada o completada.
 
