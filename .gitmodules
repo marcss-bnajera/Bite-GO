@@ -1,0 +1,6 @@
+[submodule "Bite-go-admin"]
+	path = Bite-go-admin
+	url = git@github.com:marcss-bnajera/Bite-go-admin.git
+[submodule "Bite-go-user"]
+	path = Bite-go-user
+	url = git@github.com:marcss-bnajera/Bite-go-user.git
