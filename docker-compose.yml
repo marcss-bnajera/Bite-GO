@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Base de Datos centralizada para ambos servicios
+  mongodb:
+    image: mongo:latest
+    container_name: bitego_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - bitego_network
+
+  # Microservicio de Usuarios (Clientes) - Puerto 3001
+  user-service:
+    build:
+      context: ./Bite-go-user
+    container_name: bitego_user_service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - URL_MONGODB=mongodb://mongodb:27017/BiteGoDB
+      - NODE_ENV=development
+    depends_on:
+      - mongodb
+    networks:
+      - bitego_network
+
+  # Microservicio de Administración (Staff/Operaciones) - Puerto 3002
+  admin-service:
+    build:
+      context: ./Bite-go-admin
+    container_name: bitego_admin_service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - URL_MONGODB=mongodb://mongodb:27017/BiteGoDB
+      - NODE_ENV=development
+    depends_on:
+      - mongodb
+    networks:
+      - bitego_network
+
+networks:
+  bitego_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
