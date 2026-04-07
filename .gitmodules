@@ -4,3 +4,6 @@
 [submodule "Bite-go-user"]
 	path = Bite-go-user
 	url = git@github.com:marcss-bnajera/Bite-go-user.git
+[submodule "client-admin"]
+	path = client-admin
+	url = https://github.com/marcss-bnajera/client-admin-bite-go.git
