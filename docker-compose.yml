@@ -1,7 +1,5 @@
 version: '3.8'
-
 services:
-  # Base de Datos centralizada para ambos servicios
   mongodb:
     image: mongo:latest
     container_name: bitego_db
@@ -12,7 +10,55 @@ services:
     networks:
       - bitego_network
 
-  # Microservicio de Usuarios (Clientes) - Puerto 3001
+  auth-postgres:
+    image: postgres:16-alpine
+    container_name: bitego_auth_db
+    environment:
+      - POSTGRES_USER=${AUTH_DB_USER:-bitego}
+      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD:-bitego}
+      - POSTGRES_DB=${AUTH_DB_NAME:-bitego_auth_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+    networks:
+      - bitego_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${AUTH_DB_USER:-bitego} -d ${AUTH_DB_NAME:-bitego_auth_db}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  auth-service:
+    build:
+      context: ./auth-service-bite-go
+    container_name: bitego_auth_service
+    ports:
+      - "3000:3000"
+    # Secretos específicos del auth-service (SMTP, Cloudinary) desde su propio .env:
+    env_file:
+      - ./auth-service-bite-go/.env
+    environment:
+      # Variables de infraestructura (no sensibles): siempre fijas en el contenedor.
+      - ASPNETCORE_URLS=http://+:3000
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ENABLE_SWAGGER=true
+      - DISABLE_HTTPS_REDIRECT=true
+      # JWT viene del .env raíz para mantener sincronía con user-service y admin-service.
+      # Estas vars SOBRESCRIBEN las que pudiera haber en auth-service-bite-go/.env
+      # (en Docker, `environment` gana sobre `env_file`).
+      - JwtSettings__SecretKey=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      # Connection string al contenedor de Postgres (usando vars del .env raíz).
+      - ConnectionStrings__DefaultConnection=Host=auth-postgres;Port=5432;Database=${AUTH_DB_NAME:-bitego_auth_db};Username=${AUTH_DB_USER:-bitego};Password=${AUTH_DB_PASSWORD:-bitego}
+      - AppSettings__FrontendUrl=${FRONTEND_URL:-http://localhost:5173}
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+    networks:
+      - bitego_network
+
   user-service:
     build:
       context: ./Bite-go-user
@@ -23,12 +69,17 @@ services:
       - PORT=3001
       - URL_MONGODB=mongodb://mongodb:27017/BiteGoDB
       - NODE_ENV=development
+      # Debe coincidir con el SecretKey del auth-service (vienen del .env raíz)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL:-http://auth-service:3000}
     depends_on:
       - mongodb
+      - auth-service
     networks:
       - bitego_network
 
-  # Microservicio de Administración (Staff/Operaciones) - Puerto 3002
   admin-service:
     build:
       context: ./Bite-go-admin
@@ -39,8 +90,14 @@ services:
       - PORT=3002
       - URL_MONGODB=mongodb://mongodb:27017/BiteGoDB
       - NODE_ENV=development
+      # Debe coincidir con el SecretKey del auth-service (vienen del .env raíz)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL:-http://auth-service:3000}
     depends_on:
       - mongodb
+      - auth-service
     networks:
       - bitego_network
 
@@ -50,3 +107,4 @@ networks:
 
 volumes:
   mongodb_data:
+  auth_postgres_data:
