@@ -7,3 +7,6 @@
 [submodule "client-admin"]
 	path = client-admin
 	url = https://github.com/marcss-bnajera/client-admin-bite-go.git
+[submodule "auth-service-bite-go"]
+	path = auth-service-bite-go
+	url = https://github.com/marcss-bnajera/auth-service-bite-go.git
