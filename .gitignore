@@ -1,0 +1,22 @@
+# ============================================================================
+# Bite-GO - gitignore de la raíz
+# ============================================================================
+
+# Variables de entorno con secretos — NUNCA commitear
+.env
+.env.local
+.env.*.local
+
+# Logs y artefactos
+*.log
+logs/
+npm-debug.log*
+
+# Dependencias / artefactos que pueden aparecer en la raíz
+node_modules/
+
+# IDE / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
