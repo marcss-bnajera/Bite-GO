@@ -1,12 +1,12 @@
 [submodule "Bite-go-admin"]
 	path = Bite-go-admin
-	url = git@github.com:marcss-bnajera/Bite-go-admin.git
+	url = https://github.com/marcss-bnajera/Bite-go-admin.git
 [submodule "Bite-go-user"]
 	path = Bite-go-user
-	url = git@github.com:marcss-bnajera/Bite-go-user.git
-[submodule "client-admin"]
-	path = client-admin
-	url = https://github.com/marcss-bnajera/client-admin-bite-go.git
+	url = https://github.com/marcss-bnajera/Bite-go-user.git
 [submodule "auth-service-bite-go"]
 	path = auth-service-bite-go
 	url = https://github.com/marcss-bnajera/auth-service-bite-go.git
+[submodule "client-admin-bite-go"]
+	path = client-admin-bite-go
+	url = https://github.com/marcss-bnajera/client-admin-bite-go.git
