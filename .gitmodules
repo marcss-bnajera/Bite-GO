@@ -10,3 +10,9 @@
 [submodule "client-admin-bite-go"]
 	path = client-admin-bite-go
 	url = https://github.com/marcss-bnajera/client-admin-bite-go.git
+[submodule "client-user-bite-go"]
+	path = client-user-bite-go
+	url = https://github.com/marcss-bnajera/client-user-bite-go.git
+[submodule "client-user-mobile-bite-go"]
+	path = client-user-mobile-bite-go
+	url = https://github.com/marcss-bnajera/client-user-mobile-bite-go.git
