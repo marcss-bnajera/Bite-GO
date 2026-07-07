@@ -73,6 +73,10 @@ services:
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
       - AUTH_SERVICE_URL=${AUTH_SERVICE_URL:-http://auth-service:3000}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-dshock27h}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-641581745975985}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-aJisg5OZHEFJ9sURQxBQwM_hABI}
+      - CLOUDINARY_PROFILES_FOLDER=user/profiles
     depends_on:
       - mongodb
       - auth-service
