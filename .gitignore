@@ -6,7 +6,10 @@
 .env
 .env.local
 .env.*.local
+.env-backup
 .env-backup/
+CONTEXT.md
+DEPLOY.md
 
 # Logs y artefactos
 *.log
