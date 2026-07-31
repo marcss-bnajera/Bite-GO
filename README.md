@@ -1,182 +1,367 @@
-# 🍽️ Bite&Go Admin - API REST
+# 🍽️ Bite&Go — Monorepo
 
-Una aplicación backend robusta y escalable para gestionar restaurantes, eventos gastronómicos, pedidos, recetas e inventario de suministros.
+**Plataforma de gestión gastronómica** compuesta por 6 microservicios y 3 clientes frontend. Permite administrar restaurantes, menús, pedidos, reservas, inventario y más, tanto desde web como desde app móvil.
 
-## 📋 Descripción del Proyecto
-
-**Bite&Go Admin** es una API REST desarrollada con **Node.js**, **Express** y **MongoDB** que proporciona un sistema completo de gestión para establecimientos de comida. Cuenta con 9 módulos CRUD independientes, cada uno especializado en diferentes aspectos del negocio.
-
----
-
-## 🏗️ Arquitectura y Módulos CRUD
-
-### **1. 👥 Módulo de Usuarios** (`/bite-and-go/v1/users`)
-Gestiona la información y credenciales de los usuarios del sistema.
-
-**Funcionalidades:**
-- **GET** - Listar usuarios con paginación
-- **POST** - Crear nuevo usuario
-- **PUT** - Actualizar datos de usuario
-- **DELETE** - Desactivar usuario (eliminación lógica)
-
-**Descripción:** Este módulo maneja el registro, autenticación y administración de perfiles de usuarios, incluyendo roles y permisos dentro del sistema.
+![Node](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js)
+![.NET](https://img.shields.io/badge/.NET-8-512BD4?logo=dotnet)
+![React](https://img.shields.io/badge/React-18/19-61DAFB?logo=react)
+![Expo](https://img.shields.io/badge/Expo-56-000020?logo=expo)
+![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?logo=mongodb)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
 
 ---
 
-### **2. 🏢 Módulo de Restaurantes** (`/bite-and-go/v1/restaurants`)
-Administra la información de los restaurantes asociados a la plataforma.
+## 📦 Servicios
 
-**Funcionalidades:**
-- **GET** - Listar restaurantes activos con paginación
-- **POST** - Crear nuevo restaurante
-- **PUT** - Actualizar información del restaurante
-- **DELETE** - Desactivar restaurante (no se elimina físicamente)
-
-**Descripción:** Almacena datos maestros de restaurantes como nombre, dirección, teléfono, horarios, y mantiene relaciones con mesas y eventos. Utiliza eliminación lógica para preservar la integridad histórica.
-
----
-
-### **3. 🎉 Módulo de Eventos Gastronómicos** (`/bite-and-go/v1/gastronomicEvents`)
-Gestiona eventos especiales, promociones y actividades gastronómicas del restaurante.
-
-**Funcionalidades:**
-- **GET** - Listar eventos con paginación y filtros
-- **POST** - Crear nuevo evento gastronómico
-- **PUT** - Actualizar detalles del evento
-- **DELETE** - Desactivar evento
-
-**Descripción:** Permite crear y gestionar eventos como catas, cenas temáticas, promociones especiales, vinculados a restaurantes específicos con fechas, horarios y capacidad de asistentes.
+| # | Servicio | Tecnología | Puerto | BD | Propósito |
+|---|----------|-----------|:------:|:--:|-----------|
+| 1 | **auth-service-bite-go** | .NET 8 / C# | `3000` | PostgreSQL | Autenticación, JWT, registro, verificación email, recuperación de contraseña |
+| 2 | **Bite-go-user** | Node.js / Express 5 | `3001` | MongoDB | API pública: restaurantes, menú, pedidos, reservas, reseñas |
+| 3 | **Bite-go-admin** | Node.js / Express 5 | `3002` | MongoDB | API administrativa: CRUD restaurantes, productos, inventario, usuarios staff |
+| 4 | **client-user-bite-go** | React 19 / Vite 8 | `5173` | — | Frontend web para clientes |
+| 5 | **client-admin-bite-go** | React 18 / Vite 8 | `5174` | — | Frontend web para administradores |
+| 6 | **client-user-mobile-bite-go** | React Native / Expo 56 | — | — | App mobile para clientes (Android/iOS) |
 
 ---
 
-### **4. 🪑 Módulo de Mesas** (`/bite-and-go/v1/tables`)
-Controla la información de las mesas disponibles en cada restaurante.
+## 🏗️ Arquitectura del Monorepo
 
-**Funcionalidades:**
-- **GET** - Listar mesas con estado y disponibilidad
-- **POST** - Registrar nueva mesa
-- **PUT** - Actualizar información de mesa (número, capacidad, ubicación)
-- **DELETE** - Desactivar mesa
-
-**Descripción:** Registra todas las mesas de los restaurantes, incluyendo número de mesa, capacidad de personas, zona del local y estado actual (disponible/ocupada). Es fundamental para la gestión de reservas y órdenes.
-
----
-
-### **5. 🍽️ Módulo de Productos** (`/bite-and-go/v1/products`)
-Catálogo completo de productos/platos ofrecidos por los restaurantes.
-
-**Funcionalidades:**
-- **GET** - Listar productos con paginación, filtros por categoría y precio
-- **POST** - Agregar nuevo producto/plato
-- **PUT** - Actualizar información de producto (nombre, descripción, precio, imagen)
-- **DELETE** - Desactivar producto
-
-**Descripción:** Almacena el catálogo de comidas y bebidas con detalles como descripción, precio, calorías, ingredientes, disponibilidad y categoría (entrada, plato principal, postre, bebida, etc.).
-
----
-
-### **6. 📦 Módulo de Inventario de Suministros** (`/bite-and-go/v1/suppliesInventory`)
-Gestiona el inventario y stock de ingredientes y suministros.
-
-**Funcionalidades:**
-- **GET** - Consultar niveles de stock con alertas de bajo inventario
-- **POST** - Registrar nuevos suministros
-- **PUT** - Actualizar cantidades y valores
-- **DELETE** - Desactivar suministro del inventario
-
-**Descripción:** Controla el stock de ingredientes, empaques y suministros. Monitorea niveles mínimos, permite registrar entradas y salidas, y facilita la gestión de proveedores y costos de producción.
-
----
-
-### **7. 🛒 Módulo de Órdenes** (`/bite-and-go/v1/orders`)
-Gestiona todas las órdenes/pedidos realizados en los restaurantes.
-
-**Funcionalidades:**
-- **GET** - Listar órdenes con filtros por estado, fecha y restaurante
-- **POST** - Crear nueva orden
-- **PUT** - Actualizar estado de orden (pendiente, preparando, lista, entregada)
-- **DELETE** - Cancelar orden
-
-**Descripción:** Registra cada pedido realizado por los clientes, incluyendo mesa, cliente, fecha/hora, estado de preparación, total a pagar y notas especiales. Es el centro de operaciones de ventas.
-
----
-
-### **8. 📝 Módulo de Items/Detalles de Órdenes** (`/bite-and-go/v1/items`)
-Gestiona los items individuales dentro de cada orden.
-
-**Funcionalidades:**
-- **GET** - Listar items de una orden
-- **POST** - Agregar producto a una orden
-- **PUT** - Modificar cantidad o especificaciones del item
-- **DELETE** - Remover item de la orden
-
-**Descripción:** Almacena los detalles de cada artículo en una orden: producto, cantidad, precio unitario, observaciones especiales (sin cebolla, poco picante, etc.). Vincula directamente órdenes con productos.
-
----
-
-### **9. 🍳 Módulo de Recetas** (`/bite-and-go/v1/recipes`)
-Administra las recetas y procedimientos de preparación de los platos.
-
-**Funcionalidades:**
-- **GET** - Listar recetas disponibles
-- **POST** - Crear nueva receta
-- **PUT** - Actualizar ingredientes y pasos de preparación
-- **DELETE** - Desactivar receta
-
-**Descripción:** Vincula productos (platos) con sus ingredientes y suministros, incluyendo cantidades necesarias, pasos de preparación, tiempo de cocción, dificultad y personal encargado. Crucial para la gestión de costos y control de calidad.
-
-
-### **10. 📅 Módulo de Reservas** (`/bite-and-go/v1/reservations`)
-Gestiona las reservas de mesas realizadas por los clientes en los restaurantes.
-
-**Funcionalidades:**
-- **GET** - Listar reservas con filtros por fecha, estado, cliente o restaurante
-- **POST** - Crear nueva reserva
-- **PUT** - Actualizar datos de la reserva (fecha, hora, cantidad de personas, estado)
-- **DELETE** - Cancelar reserva
-
-**Descripción:** Permite a los clientes reservar mesas en restaurantes específicos indicando fecha, hora y número de personas. El módulo valida disponibilidad según capacidad y estado de las mesas, evita sobre reservas y mantiene estados como: pendiente, confirmada, cancelada o completada.
+```
+Bite-GO/
+│
+├── auth-service-bite-go/          # 🔐 .NET 8 — Autenticación
+│   └── src/
+│       ├── AuthService.Api/           # Endpoints REST, Swagger
+│       ├── AuthService.Application/   # JWT, Argon2, Email (Brevo), Cloudinary
+│       ├── AuthService.Domain/        # Entidades, Enums, Interfaces
+│       └── AuthService.Persistence/   # EF Core, Migraciones, Seed Data
+│
+├── Bite-go-user/                  # 🧑‍🍳 Node.js — API Clientes
+│   ├── configs/                       # Express, CORS, Helmet, MongoDB
+│   ├── middlewares/                   # JWT validation, roles, validators
+│   ├── index.js / Dockerfile          # Entry point
+│   └── src/
+│       ├── users/                     # Perfil, favoritos, direcciones
+│       ├── restaurants/               # Información pública de restaurantes
+│       ├── orders/                    # Pedidos del cliente
+│       ├── reservations/              # Reservas de mesas
+│       ├── products/                  # Menú y productos
+│       ├── categories/                # Categorías de productos
+│       ├── coupons/                   # Validación de cupones
+│       ├── notifications/             # Notificaciones push
+│       ├── reviewsRatings/            # Reseñas y calificaciones
+│       ├── items/                     # Items dentro de pedidos
+│       └── gastronomicEvents/         # Eventos del restaurante
+│
+├── Bite-go-admin/                 # 👑 Node.js — API Administración
+│   ├── configs/                       # Express, CORS, Helmet, MongoDB
+│   ├── middlewares/                   # JWT, roles, 19 validadores
+│   ├── scripts/                       # migrate-sucursales.js
+│   ├── index.js / Dockerfile
+│   └── src/
+│       ├── users/                     # CRUD usuarios staff
+│       ├── restaurants/               # CRUD restaurantes + sucursales + mesas
+│       ├── orders/                    # CRUD pedidos
+│       ├── reservations/              # CRUD reservas + check-in
+│       ├── products/                  # CRUD productos + recetas
+│       ├── categories/                # CRUD categorías
+│       ├── suppliesInventory/         # Inventario de suministros
+│       ├── items/                     # Items de pedidos
+│       ├── recipes/                   # Recetas (ingredientes)
+│       ├── tables/                    # Gestión de mesas
+│       ├── gastronomicEvents/         # Eventos gastronómicos
+│       └── inter-service/             # Endpoints internos (stock)
+│
+├── client-user-bite-go/           # 🌐 React 19 — Frontend Cliente
+│   └── src/
+│       ├── features/                  # auth, restaurants, orders, reservations, profile, reviews...
+│       ├── shared/                    # API client, hooks, utils
+│       └── app/                       # App root, routing (React Router 7)
+│
+├── client-admin-bite-go/          # ⚙️ React 18 — Frontend Admin
+│   └── src/
+│       ├── features/                  # restaurants, orders, reservations, products, inventory...
+│       ├── shared/                    # API client, Zustand stores, UI components
+│       └── app/                       # App root, layouts, routing
+│
+├── client-user-mobile-bite-go/    # 📱 Expo / React Native — App Cliente
+│   └── src/
+│       ├── features/                  # auth, restaurants, orders, reservations, profile...
+│       ├── navigation/                # AuthStack, MainTabs, AppNavigator
+│       └── shared/                    # API client, store, hooks, providers
+│
+├── .env                            # Variables compartidas (JWT, DBs)
+├── .env.example                    # Template con documentación
+├── docker-compose.yml              # Orquestación Docker completa
+└── .gitignore                      # Reglas globales
+```
 
 ---
 
-## 🔧 Tecnologías Utilizadas
+## 🛠️ Stack Tecnológico
 
-| Tecnología | Propósito |
+| Categoría | Tecnología |
 |-----------|-----------|
-| **Node.js** | Runtime de JavaScript |
-| **Express.js** | Framework web y enrutamiento |
-| **MongoDB** | Base de datos NoSQL |
-| **Mongoose** | ODM para MongoDB |
-| **CORS** | Manejo de solicitudes cross-origin |
-| **Helmet** | Seguridad de headers HTTP |
-| **Morgan** | Logging de solicitudes HTTP |
+| **Auth Service** | .NET 8, EF Core, Npgsql, Argon2, MailKit/Brevo, Cloudinary |
+| **APIs REST** | Node.js 18+, Express 5, Mongoose 9, express-validator |
+| **Bases de datos** | MongoDB 7 (principal), PostgreSQL 16 (auth) |
+| **Frontend Web** | React 18/19, Vite 8, Tailwind CSS 4, Zustand 5, React Router 7, react-hook-form, react-hot-toast |
+| **App Mobile** | React Native 0.85, Expo 56, NativeWind 4, React Navigation 7, Zustand |
+| **Infraestructura** | Docker Compose, Cloudinary (imágenes), Brevo (emails) |
+| **Autenticación** | JWT HS256 cross-service, claims expandidos |
 
 ---
 
-## 🚀 Instalación y Configuración
+## 🔑 JWT Compartido
 
-### Requisitos Previos
-- Node.js v14 o superior
-- MongoDB instalado o cuenta en MongoDB Atlas
-- npm o yarn
+El `auth-service` emite tokens JWT que los servicios Node consumen. Las variables deben ser **idénticas** en los 3 servicios:
 
-### Pasos de Instalación
+| Variable | .env raíz | Propósito |
+|----------|-----------|-----------|
+| `JWT_SECRET` | ✅ | Firma HMAC-SHA256 |
+| `JWT_ISSUER` | ✅ | `"BiteGoAuthService"` |
+| `JWT_AUDIENCE` | ✅ | `"BiteGoServices"` |
+
+### Claims del JWT
+
+```json
+{
+  "sub": "usr_abc123",
+  "role": "Admin_Restaurante",
+  "jti": "guid-unico",
+  "iat": 1700000000,
+  "exp": 1700003600,
+  "email": "admin@restaurante.com",
+  "email_verified": "true",
+  "name": "Juan",
+  "surname": "Pérez",
+  "username": "juanp"
+}
+```
+
+> **⚠️ Importante:** El `sub` es un **string** (`usr_xxx`), NO un ObjectId de MongoDB. Los modelos de user-service y admin-service usan `auth_id` para este campo.
+
+---
+
+## 🚀 Inicio Rápido (Docker)
+
+### Requisitos
+
+- Docker Desktop 24+ / Docker Engine
+- Docker Compose v2
+- Git con `--recurse-submodules`
+
+### Pasos
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/marcss-bnajera/Bite-GO.git
+# 1. Clonar con submódulos
+git clone --recurse-submodules https://github.com/marcss-bnajera/Bite-GO.git
 cd Bite-GO
 
-# 2. Instalar dependencias
-npm install
-
-# 3. Configurar variables de entorno
-# Crear archivo .env en la raíz del proyecto
+# 2. Variables compartidas (JWT, bases de datos)
 cp .env.example .env
+#    Editar JWT_SECRET si es necesario
+#    Si cambias el secret, los tokens existentes dejarán de validar
 
-# 4. Variables necesarias en .env
-PORT=3001
-URL_MONGODB=mongodb+srv://usuario:contraseña@cluster.mongodb.net/bite-go
+# 3. Secretos del auth-service (Brevo SMTP + Cloudinary)
+cp auth-service-bite-go/.env.example auth-service-bite-go/.env
+#    Editar credenciales Brevo (ApiKey) y Cloudinary
 
-# 5. Iniciar el servidor
-npm start
+# 4. Levantar todo
+docker compose up --build
+```
+
+### Servicios que levanta
+
+| Servicio | Puerto | Depende de | Tiempo inicio |
+|----------|:------:|------------|:------------:|
+| `mongodb` | `27017` | — | ~5s |
+| `auth-postgres` | `5432` | — | ~10s (healthcheck) |
+| `auth-service` | `3000` | PostgreSQL | ~30s |
+| `user-service` | `3001` | MongoDB, auth | ~10s |
+| `admin-service` | `3002` | MongoDB, auth | ~10s |
+| `client-admin` | `5173` | auth, user, admin | ~15s |
+
+### Servicios que NO están en Docker
+
+```bash
+# Frontend web cliente (puerto 5174)
+cd client-user-bite-go
+npm install
+npm run dev
+
+# App mobile
+cd client-user-mobile-bite-go
+npm install
+npx expo start
+```
+
+---
+
+## ⚙️ Variables de Entorno
+
+### `.env` raíz (compartido)
+
+```bash
+# --- JWT (DEBEN ser idénticos en auth, user y admin) ---
+JWT_SECRET=BiteAndGoSuperSecretKey_ChangeMeInProduction_0123456789ABCDEFabcdef==!
+JWT_ISSUER=BiteGoAuthService
+JWT_AUDIENCE=BiteGoServices
+
+# --- URLs internas ---
+AUTH_SERVICE_URL=http://auth-service:3000
+FRONTEND_URL=http://localhost:5173
+
+# --- CORS ---
+ALLOWED_ORIGIN=http://localhost:5173,http://localhost:5174
+
+# --- Brevo (emails) ---
+BREVO_API_KEY=xkeysib-tu_api_key_aqui
+
+# --- PostgreSQL auth-service ---
+AUTH_DB_USER=bitego
+AUTH_DB_PASSWORD=bitego
+AUTH_DB_NAME=bitego_auth_db
+```
+
+### `auth-service-bite-go/.env` (secretos propios)
+
+```bash
+SmtpSettings__Host=smtp-relay.brevo.com
+SmtpSettings__Port=587
+SmtpSettings__Username=<tu-email-smtp>
+SmtpSettings__Password=<tu-smtp-password>
+SmtpSettings__FromEmail=<tu-email-from>
+SmtpSettings__FromName="Bite&Go"
+Cloudinary__CloudName=<tu-cloud-name>
+Cloudinary__ApiKey=<tu-cloudinary-api-key>
+Cloudinary__ApiSecret=<tu-cloudinary-secret>
+```
+
+---
+
+## 🐳 Docker Compose — Servicios
+
+| Comando | Qué levanta |
+|---------|-------------|
+| `docker compose up --build` | Todo (excepto client-user-web y mobile) |
+| `docker compose up --build auth-service` | Solo auth + Postgres |
+| `docker compose up --build user-service` | Solo user + MongoDB + auth |
+| `docker compose up --build admin-service` | Solo admin + MongoDB + auth |
+| `docker compose up --build client-admin` | Solo admin frontend + backends |
+
+---
+
+## 🚢 Despliegue (Producción)
+
+### Auth Service (.NET) — Render
+
+```yaml
+# Render Dashboard:
+# - Runtime: Docker
+# - Dockerfile: ./auth-service-bite-go/Dockerfile
+# - Environment Variables:
+#   JwtSettings__SecretKey, JwtSettings__Issuer, JwtSettings__Audience
+#   ConnectionStrings__DefaultConnection=<external-postgres-url>
+#   SmtpSettings__*, Cloudinary__*, Brevo__*
+#   AppSettings__FrontendUrl=https://client-user.vercel.app
+```
+
+### User / Admin Service (Node) — Render
+
+```yaml
+# Render Dashboard:
+# - Runtime: Docker
+# - Puerto: 3001 (user) / 3002 (admin)
+# - Environment Variables:
+#   JWT_SECRET, JWT_ISSUER, JWT_AUDIENCE
+#   URL_MONGODB=<atlas-connection-string>
+#   AUTH_SERVICE_URL, INTER_SERVICE_SECRET
+#   CLOUDINARY_*, ALLOWED_ORIGIN
+```
+
+### Frontends Web — Vercel
+
+```bash
+# Cada frontend se despliega desde su propio repo:
+cd client-user-bite-go  # o client-admin-bite-go
+vercel --prod
+```
+
+**Variables de entorno en Vercel:**
+
+| App | Variable | Valor |
+|-----|----------|-------|
+| Cliente | `VITE_AUTH_URL` | `https://auth-service.onrender.com` |
+| Cliente | `VITE_API_URL` | `https://user-service.onrender.com/bite-and-go/v1` |
+| Admin | `VITE_AUTH_URL` | `https://auth-service.onrender.com` |
+| Admin | `VITE_API_URL` | `https://admin-service.onrender.com/bite-and-go/v1` |
+
+### App Mobile — Expo / EAS
+
+```bash
+cd client-user-mobile-bite-go
+eas build --platform all
+eas submit --platform all
+```
+
+> Las variables de entorno se inyectan via `app.json` `extra` o con EAS Secrets.
+
+---
+
+## 👥 Roles del Sistema
+
+| Rol | Acceso | Frontend |
+|-----|--------|-----------|
+| **SuperAdmin** | Total — todos los módulos y restaurantes | Admin |
+| **Admin_Restaurante** | Restaurante asignado (gestión completa) | Admin |
+| **Mesero** | Pedidos y mesas en sala | Admin (limitado) |
+| **Cocinero** | Cola de cocina, marcar pedidos como listos | Admin (limitado) |
+| **Repartidor** | Pedidos para domicilio | Mobile |
+| **Cliente** | Usuario final — frontend web/mobile | Cliente |
+
+### Credenciales por defecto (desarrollo)
+
+```
+Email: superadmin@bitego.local
+Password: BiteGo1234!
+```
+
+---
+
+## ❓ Troubleshooting
+
+| Problema | Causa | Solución |
+|----------|-------|----------|
+| `401 Unauthorized` en admin/user | JWT_SECRET diferente entre servicios | Verificar `.env` raíz — usa `docker compose config` |
+| `ECONNREFUSED` a PostgreSQL | Healthcheck de Postgres no termina | Esperar ~15s en primer arranque |
+| `JWT SecretKey not configured` | Falta `.env` raíz | `cp .env.example .env` |
+| Error al enviar email | Brevo API Key incorrecta | Verificar en dashboard.brevo.com |
+| `Authentication failed` SMTP | App Password con espacios | Regenerar y pegar sin espacios |
+| Cold start lento (Render) | Free tier spindown tras 15 min | UptimeRobot configurado |
+| 503 en forgot-password | Fila corrupta en user_password_reset | `DELETE FROM "user_password_reset" WHERE "Id" = ''` |
+
+---
+
+## 🧪 Probar el Flujo End-to-End
+
+```bash
+# 1. Registrar usuario
+curl -X POST http://localhost:3000/api/v1/Auth/register \
+  -F "name=Juan" -F "surname=Perez" \
+  -F "username=juanp" -F "email=juan@demo.com" \
+  -F "password=SuperSeguro1!" -F "phone=55512345"
+
+# 2. Verificar email (o marcar status=true en BD)
+# 3. Login
+curl -X POST http://localhost:3000/api/v1/Auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"emailOrUsername":"juanp","password":"SuperSeguro1!"}'
+
+# 4. Health check user-service
+curl http://localhost:3001/health
+
+# 5. Health check admin-service
+curl http://localhost:3002/health
+```
